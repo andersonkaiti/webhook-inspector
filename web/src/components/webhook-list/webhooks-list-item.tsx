@@ -1,8 +1,8 @@
 import { Link } from '@tanstack/react-router'
 import { formatDistanceToNow } from 'date-fns'
 import { Trash2Icon } from 'lucide-react'
-import { Checkbox } from './ui/checkbox'
-import { IconButton } from './ui/icon-button'
+import { Checkbox } from '../ui/checkbox'
+import { IconButton } from '../ui/icon-button'
 
 interface WebhooksListItemProps {
   webhook: {
