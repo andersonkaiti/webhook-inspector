@@ -38,48 +38,60 @@ export const generateHandler: FastifyPluginAsyncZod = async (app) => {
       const { text } = await generateText({
         model: google('gemini-2.5-flash-lite'),
         prompt: `
-          You will receive several examples of webhook request bodies from different events.
-          Your task is to generate a TypeScript handler function that can process these webhook events dynamically.
+          You will be provided with several examples of webhook request bodies, delimited by """.
+
+          Your task is to generate a robust, type-safe TypeScript handler function to process these webhook events dynamically. The solution must use TypeScript and Zod for strict runtime validation and type inference.
 
           Requirements:
 
-          Use TypeScript and Zod for strict runtime validation and type inference.
+          1. Zod Schema Generation
+          Analyze the provided examples to identify distinct event types.
 
-          Create a Zod schema that matches all possible webhook event payloads based on the provided examples.
+          Create an individual Zod schema for each distinct event payload.
 
-          The handler function must:
+          Infer the common discriminator field (e.g., type, event, event_name) used to distinguish events.
 
-          Receive an incoming request body (as unknown).
+          Create a single, unified schema (preferably a z.discriminatedUnion) that can parse any of the provided event types.
 
-          Validate it against the Zod schema.
+          2. TypeScript Handler Function
+          The handler function (e.g., handleWebhookEvent) must:
 
-          Identify the event type safely (e.g., by a type or event field if available).
+          Accept an incoming request body (as unknown).
 
-          Execute event-specific logic inside a switch or if block for each supported event.
+          Use the unified Zod schema's .safeParse() method to validate and parse the body.
 
-          Return a structured response or throw a typed error if validation fails.
+          If parsing fails, throw a custom WebhookError (which you should define) or return a structured error response (e.g., { success: false, error: validationIssues }).
 
-          The generated code must be fully self-contained, type-safe, and ready to use in a real project (e.g., for an API route).
+          If parsing succeeds, use a switch statement on the discriminator field to route to event-specific logic.
 
-          Prefer clear variable names and concise but professional comments.
+          Each case block must demonstrate complete type safety, with the data object correctly narrowed to the specific event's type.
 
-          Input (replace this section with your actual webhook payloads):
+          Include placeholder comments (e.g., // Handle user created event) inside each case block.
+
+          Return a structured success response (e.g., { success: true, message: "Event processed" }).
+
+          3. Code Quality
+          The generated code must be a single, self-contained, and complete TypeScript file.
+
+          Include all necessary import statements from zod.
+
+          Use clear variable names and concise, professional comments.
+
+          The code must be production-ready, type-safe, and free of linting errors.
+
+          Input (Webhook Payloads):
 
           """
           ${webhooksBodies}
           """
 
+          Output Format:
 
-          Output:
-          A complete TypeScript file containing:
+          Strictly return only the raw TypeScript code.
 
-          The Zod schema(s) for the webhook payloads.
+          DO NOT include markdown backticks like \`\`\`typescript.
 
-          The unified schema for all event types.
-
-          The TypeScript handler function that validates and routes events accordingly.
-
-          Return only the code and do not return \`\`\`typescript or any other markdown symbols, do not include any introduction or text before or after the code.
+          DO NOT include any introductory text, explanations, or concluding remarks before or after the code.
         `.trim(),
       })
 
