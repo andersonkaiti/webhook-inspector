@@ -22,7 +22,7 @@ app.setSerializerCompiler(serializerCompiler)
 
 app.register(fastifyCors, {
   origin: true,
-  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONAL'],
+  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
   // credentials: true
 })
 
