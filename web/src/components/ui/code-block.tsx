@@ -26,7 +26,7 @@ export function CodeBlock({
   return (
     <div
       className={twMerge(
-        'relative rounded-lg border border-zinc-700 overflow-x-auto',
+        'rounded-lg border border-zinc-700 overflow-x-auto',
         className,
       )}
       {...props}
